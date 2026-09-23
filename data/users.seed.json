@@ -1,0 +1,66 @@
+[
+  {
+    "email": "sarah@nimbuslabs.io",
+    "name": "Sarah Ikein",
+    "role": "engineering",
+    "title": "AI Engineer",
+    "start_date": "2026-06-01",
+    "manager_email": "daniel@nimbuslabs.io"
+  },
+  {
+    "email": "john@nimbuslabs.io",
+    "name": "John Adeyemi",
+    "role": "engineering",
+    "title": "Senior Engineer (Tech Lead)",
+    "start_date": "2023-03-10",
+    "manager_email": "daniel@nimbuslabs.io"
+  },
+  {
+    "email": "daniel@nimbuslabs.io",
+    "name": "Daniel Osei",
+    "role": "engineering",
+    "title": "Engineering Manager",
+    "start_date": "2022-09-01",
+    "manager_email": null
+  },
+  {
+    "email": "amaka@nimbuslabs.io",
+    "name": "Amaka Eze",
+    "role": "growth",
+    "title": "Growth Manager",
+    "start_date": "2026-04-01",
+    "manager_email": "priya@nimbuslabs.io"
+  },
+  {
+    "email": "priya@nimbuslabs.io",
+    "name": "Priya Raman",
+    "role": "growth",
+    "title": "Head of Growth",
+    "start_date": "2022-11-14",
+    "manager_email": null
+  },
+  {
+    "email": "tunde@nimbuslabs.io",
+    "name": "Tunde Bello",
+    "role": "people",
+    "title": "People Partner",
+    "start_date": "2023-08-07",
+    "manager_email": null
+  },
+  {
+    "email": "lara@nimbuslabs.io",
+    "name": "Lara Mensah",
+    "role": "finance",
+    "title": "Finance Analyst",
+    "start_date": "2026-02-02",
+    "manager_email": "henrik@nimbuslabs.io"
+  },
+  {
+    "email": "henrik@nimbuslabs.io",
+    "name": "Henrik Larsen",
+    "role": "finance",
+    "title": "Finance Lead",
+    "start_date": "2022-04-18",
+    "manager_email": null
+  }
+]
