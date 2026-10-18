@@ -63,7 +63,7 @@ resolved.
 
 If you cannot make progress in 30 minutes, page the secondary. If the
 incident is still open after 2 hours, page the engineering lead (Daniel
-Owusu). For anything that looks like a security issue rather than a
+Osei). For anything that looks like a security issue rather than a
 plain availability issue, stop and go to `general/security-policy.md`
 section 5 instead — that's a different process with a different channel
 (#security-incidents, not the incident channel), and starts over from

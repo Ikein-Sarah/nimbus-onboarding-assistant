@@ -26,9 +26,11 @@ def create_table(conn):
             path        TEXT NOT NULL,
             department  TEXT NOT NULL,
             owner       TEXT NOT NULL,
-            embedding   vector({DIMENSIONS}) NOT NULL
+            embedding   vector({DIMENSIONS}) NOT NULL,
+            tsv         tsvector GENERATED ALWAYS AS (to_tsvector('english', text)) STORED
         )
     """)
+    conn.execute("CREATE INDEX chunks_tsv_idx ON chunks USING GIN (tsv)")
     conn.commit()
 
 

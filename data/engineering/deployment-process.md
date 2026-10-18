@@ -7,7 +7,7 @@ summary: How code reaches staging and production, release windows and rollback s
 ---
 
 > **Archived.** Superseded by `deployment-process-v2.md`, effective
-> 2026-08-15, which adds canary rollouts and mandatory feature flags for
+> 2026-05-15, which adds canary rollouts and mandatory feature flags for
 > auth/billing/deletion changes. The environments, release window, and
 > migration rules below are still accurate; the "Releasing to production"
 > section is not — there's a canary step now.

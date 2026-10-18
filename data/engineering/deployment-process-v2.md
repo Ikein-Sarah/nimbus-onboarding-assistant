@@ -2,7 +2,7 @@
 title: Deployment Process v2 (Canary Releases)
 department: engineering
 owner: all
-effective: 2026-08-15
+effective: 2026-05-15
 summary: Replaces the 2026-04 Deployment Process. Adds canary rollouts and mandatory feature flags for risky changes.
 ---
 
@@ -56,7 +56,7 @@ lets us disable a bad change without a full rollback.
 
 This is a genuinely new requirement — it did not exist under v1, and
 older engineering onboarding material may not mention it yet. If you
-onboarded before August 2026, this is likely new to you.
+onboarded before mid-May 2026, this is likely new to you.
 
 ## Rollback
 
