@@ -2,12 +2,13 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from app.retrievers.vector import retrieve
+from app.retrievers import vector, file_agent
 
 load_dotenv()
 
 MODEL = "gpt-4o"
 NO_ANSWER = "I couldn't find information about that"
+
 client = OpenAI()
 
 SYSTEM_PROMPT = """
@@ -44,36 +45,48 @@ Rules:
 def build_context(chunks):
     parts = []
     for chunk in chunks:
-        parts.append(f"source: {chunk['path']}\n {chunk['text']}")
-        pass
+        parts.append(f"[source: {chunk['path']}]\n{chunk['text']}")
     return "\n\n".join(parts)
 
 
-def answer(question, email, department):
-    chunks = retrieve(question, email, department)
+def answer(question, email, department, retriever=vector.retrieve):
+    chunks = retriever(question, email, department)
     context = build_context(chunks)
 
-    user_message = f"company document: \n\n{context}\n\nQuestion: {question}"
+    user_message = f"Company documents:\n\n{context}\n\nQuestion: {question}"
+
     response = client.responses.create(
-        model= MODEL,
-        instructions= SYSTEM_PROMPT,
-        input= user_message,
+        model=MODEL,
+        instructions=SYSTEM_PROMPT,
+        input=user_message,
     )
-    text = response.output_text.strip()                      # <-- new
+
+    text = response.output_text.strip()
     refused = NO_ANSWER in text
 
     return {
-        "answer": text,                                      # <-- changed
-        "sources": [] if refused else sorted({c["path"] for c in chunks}),   # <-- changed
+        "answer": text,
+        "sources": [] if refused else sorted({c["path"] for c in chunks}),
     }
 
 
 if __name__ == "__main__":
-    question = "What is John Mensah's salary?"
+    question = "What is the pay band for a senior engineer?"
 
-    for email, dept in [("tunde@nimbuslabs.io", "people"),
-                        ("sarah@nimbuslabs.io", "engineering")]:
-        result = answer(question, email, dept)
-        print(f"\n=== {email} ===")
-        print(result["answer"])
-        print("sources:", result["sources"])
+    routes = [
+        ("vector", vector.retrieve),
+        ("file agent", file_agent.retrieve),
+    ]
+
+    people = [
+        ("tunde@nimbuslabs.io", "people"),
+        ("sarah@nimbuslabs.io", "engineering"),
+    ]
+
+    for email, dept in people:
+        print(f"\n########  {email} ({dept})  ########")
+        for name, retriever in routes:
+            result = answer(question, email, dept, retriever)
+            print(f"\n--- {name} ---")
+            print(result["answer"])
+            print("sources:", result["sources"])

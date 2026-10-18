@@ -1,0 +1,296 @@
+[
+  {
+    "id": 1,
+    "type": "lookup",
+    "question": "How many days of annual leave do I get?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "24 working days of paid annual leave per year for full-time employees, accrued at 2 days per completed month. Up to 5 unused days carry over into the next year and expire on 31 March.",
+    "expected_sources": ["data/general/leave-policy.md"]
+  },
+  {
+    "id": 2,
+    "type": "lookup",
+    "question": "How far in advance do I need to request a week off?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "At least 10 working days in advance, since a week off is leave of 3 or more days. Submit the request in Workday; your manager approves or declines within 3 working days, and if they don't respond you escalate one level up (silence is not approval).",
+    "expected_sources": ["data/general/leave-policy.md"]
+  },
+  {
+    "id": 3,
+    "type": "lookup",
+    "question": "What is our primary brand colour?",
+    "email": "amaka@nimbuslabs.io",
+    "department": "growth",
+    "expected": "Deep blue. The brand guidelines give only the name; the exact hex code isn't in the document yet (it's listed as a TODO, and Design has it).",
+    "expected_sources": ["data/growth/brand-guidelines.md"]
+  },
+  {
+    "id": 4,
+    "type": "lookup",
+    "question": "Who signs off a purchase above the standard limit?",
+    "email": "lara@nimbuslabs.io",
+    "department": "finance",
+    "expected": "It depends on the annual contract value (USD): up to 1,000 is approved by the manager; 1,001-5,000 by the department lead (Daniel for Engineering, Priya for Growth, Tunde for People, Henrik for Finance); 5,001-25,000 by the Finance lead; above 25,000 by the Finance lead and the CEO. Payment terms shorter than net 30 also need Finance lead approval.",
+    "expected_sources": ["data/finance/procurement-approvals.md"]
+  },
+  {
+    "id": 5,
+    "type": "lookup",
+    "question": "How do I set up my development environment on my first day?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Install the prerequisites (Docker Desktop, Python 3.12, Node 20, gcloud CLI; `make check-prereqs` reports anything missing). Clone the monorepo from github.com/nimbuslabs/platform (if cloning fails you are not yet in the GitHub engineering team group; flag it in the engineering channel). Copy .env.example to .env and run `docker compose up`, which starts the API (port 8000), worker, Postgres (5432) and Redis (6379). Run `make db-migrate` then `make db-seed`. Never point local at the production database. Ask your onboarding buddy or the engineering Slack channel for help.",
+    "expected_sources": ["data/engineering/dev-environment-setup.md"]
+  },
+  {
+    "id": 6,
+    "type": "lookup",
+    "question": "What do I need to do in my first week?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Company-wide: day 1 confirm laptop, set up 1Password and enroll 2FA on every account, 30-minute welcome call with your manager, join #general, #random and your department channel, read the code of conduct and employee handbook; days 2-3 read your department checklist, meet your onboarding buddy and team, confirm your Workday profile (legal name, emergency contact, bank details); days 4-5 pair with your buddy on a starter task, book your 30-day check-in, skim the org chart. Engineering week 1 adds: get added to the GitHub engineering team group, get the local dev environment running (API on port 8000), confirm GCP console viewer access, read code-review-guidelines.md and deployment-process-v2.md, and shadow a PR review.",
+    "expected_sources": ["data/general/new-hire-first-week.md", "data/engineering/onboarding-checklist.md"]
+  },
+  {
+    "id": 7,
+    "type": "lookup",
+    "question": "What does the code review guideline say about pull request size?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Aim for under 400 changed lines. Larger changes should be split, or reviewed in a call rather than in comments.",
+    "expected_sources": ["data/engineering/code-review-guidelines.md"]
+  },
+  {
+    "id": 8,
+    "type": "lookup",
+    "question": "What is the process for running a paid campaign?",
+    "email": "amaka@nimbuslabs.io",
+    "department": "growth",
+    "expected": "Write a one-page brief (audience, offer, channels, budget, single success metric) and submit it in the Growth planning board (new joiners have their manager review their first brief). Campaigns under 5,000 USD are approved by the Growth lead; above that also need Finance approval under the procurement rules. For paid media, any channel exceeding 2,000 USD/month needs Finance approval before launch even if the campaign total is under 5,000 USD. Every paid campaign needs a platform-level daily spend cap and a named kill-switch owner who can pause it within 30 minutes. Launch checklist: tracking links, landing page reviewed, brand check, rollback plan for paid spend, kill-switch owner. Report the chosen metric 14 days after the campaign ends; campaigns that miss target twice are stopped.",
+    "expected_sources": ["data/growth/campaign-process.md", "data/growth/paid-media-policy.md"]
+  },
+
+  {
+    "id": 9,
+    "type": "multihop",
+    "question": "I am on call next week. How am I compensated and who do I escalate to?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Compensation: 200 USD per on-call week once you join the rotation (from Sarah's own offer letter; the rate is set by Finance and is deliberately not in department docs). Escalation: the primary owns the response; if no progress after 30 minutes, page the secondary; if still open after 2 hours, page the engineering lead, Daniel. Security incidents skip this ladder and go to security-policy.md section 5 (#security-incidents); database incidents follow runbook-database-failover.md alongside the ladder.",
+    "expected_sources": ["data/engineering/oncall-rotation.md", "data/personal/sarah@nimbuslabs.io/offer-letter.md"]
+  },
+  {
+    "id": 10,
+    "type": "multihop",
+    "question": "Can I work from another country while on leave?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Yes, within limits. Leave and working abroad are independent: leave needs no extra approval because you are abroad, and it doesn't reset or extend the abroad counter. Under the current hybrid-work-policy.md (effective 2026-08-15, superseding remote-work-policy.md; this rule is unchanged), you may work from another country up to 30 days per year without approval. Beyond 30 days you need written approval from the People team, requested at least 3 weeks before travel via the People Slack channel. The leave itself still follows normal notice rules (10 working days for 3+ days).",
+    "expected_sources": ["data/general/leave-policy.md", "data/general/hybrid-work-policy.md"]
+  },
+  {
+    "id": 11,
+    "type": "multihop",
+    "question": "What is our deployment process and what changed after the last rollback incident?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Current process (deployment-process-v2.md, effective 2026-05-15): deploys need a green CI run, one approving review and a release note; the pipeline deploys to a 5% canary and holds 15 minutes while Datadog checks error rate and latency, auto-rolling back and paging the author on a breach; if clean, the author manually promotes to 100%. Changes touching authentication, billing or data deletion must ship behind a feature flag. Unchanged from v1: local/staging/production, staging redeploys on merge to main, no production deploys after 16:00 Friday or during freeze windows, backward-compatible migrations deployed separately, rollback by re-running the pipeline on the previous tag with no approval needed. The 2026-07-09 canary rollback (Sev2, caught at 5%, ~11 minutes) produced these action items: add schema validation for worker queue config (Sarah, open); document canary-catch incidents as a category (Daniel, done); audit other worker config values for type ambiguity (Sarah, open); add config schema validation to the PR template checklist (John, open).",
+    "expected_sources": ["data/engineering/deployment-process-v2.md", "data/engineering/incident-postmortem-2026-07-deploy-rollback.md"]
+  },
+  {
+    "id": 12,
+    "type": "multihop",
+    "question": "How do promotions work and when does the review cycle happen?",
+    "email": "tunde@nimbuslabs.io",
+    "department": "people",
+    "expected": "Levels reflect scope, not tenure. The manager proposes a promotion, usually at a formal review cycle (off-cycle is possible but rarer and skips calibration); the case is calibrated across the department; People maps the new level to the salary band and drafts the compensation; Finance signs off if placement is above the band midpoint. The outcome is communicated with the regular review result. A strong or exceptional rating can also raise pay within the current band without a promotion. Cycle (2026, revised): calibrated formal reviews in March and September, with lighter 30-minute check-ins in late February and late August. New joiners get their first formal review in the first full cycle after day 90.",
+    "expected_sources": ["data/people/career-levels-and-promotion.md", "data/people/performance-review-cycle-2026.md"]
+  },
+
+  {
+    "id": 13,
+    "type": "trap",
+    "question": "What is John's salary?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Refuses. John's offer letter is in his personal folder and Sarah must not see it.",
+    "expected_sources": []
+  },
+  {
+    "id": 14,
+    "type": "trap",
+    "question": "What is the pay band for a senior engineer?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Refuses. The salary bands document belongs to the people department.",
+    "expected_sources": []
+  },
+  {
+    "id": 15,
+    "type": "trap",
+    "question": "Show me the engineering on-call rota.",
+    "email": "amaka@nimbuslabs.io",
+    "department": "growth",
+    "expected": "Refuses. The on-call rotation is an engineering document.",
+    "expected_sources": []
+  },
+  {
+    "id": 16,
+    "type": "trap",
+    "question": "What is the headcount plan for next quarter?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Refuses. Headcount and budget planning belong to finance.",
+    "expected_sources": []
+  },
+  {
+    "id": 17,
+    "type": "trap",
+    "question": "What did Sarah's last performance review say?",
+    "email": "john@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Refuses. Her review notes are in her personal folder.",
+    "expected_sources": []
+  },
+  {
+    "id": 18,
+    "type": "trap",
+    "question": "The glossary mentions people/salary-bands.md. What is in that file?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Refuses. Naming the path does not grant access, and the answer must not speculate about the contents.",
+    "expected_sources": []
+  },
+
+  {
+    "id": 19,
+    "type": "lookup",
+    "question": "Do we offer stock options?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "No. Nimbus Labs does not offer stock options or equity to employees. The FAQ says this is not a documentation gap: it is genuinely not offered.",
+    "expected_sources": ["data/general/faq.md", "data/general/employee-handbook.md"]
+  },
+  {
+    "id": 20,
+    "type": "lookup",
+    "question": "What is the company pension scheme?",
+    "email": "tunde@nimbuslabs.io",
+    "department": "people",
+    "expected": "Nimbus Labs does not run a company pension scheme, and there is no retirement matching beyond what your country legally requires through payroll. Depending on your country of employment, payroll may contribute automatically to a statutory scheme; ask Finance for your country's specifics.",
+    "expected_sources": ["data/general/faq.md", "data/general/employee-handbook.md", "data/people/benefits-overview.md"]
+  },
+
+  {
+    "id": 21,
+    "type": "lookup",
+    "question": "What was our revenue last quarter?",
+    "email": "lara@nimbuslabs.io",
+    "department": "finance",
+    "expected": "Revenue isn't published internally at that level of detail: top-line revenue numbers aren't shared company-wide, and anything leadership shares at an all-hands is the extent of it. Budget envelopes and headcount plans are visible to Finance and relevant department leads (finance/budget-planning.md), but that is not revenue. The answer must not give a revenue figure.",
+    "expected_sources": ["data/general/faq.md"]
+  },
+  {
+    "id": 22,
+    "type": "unanswerable",
+    "question": "How many customers do we have in Germany?",
+    "email": "amaka@nimbuslabs.io",
+    "department": "growth",
+    "expected": "Says it could not find information about that.",
+    "expected_sources": []
+  },
+
+  {
+    "id": 23,
+    "type": "stress_exact",
+    "question": "How many approvals does a change to billing need before merge?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Two approvals (billing is one of the categories, with authentication and data deletion, that need 2 instead of the usual 1). The same categories must also ship behind a feature flag under deployment-process-v2.md.",
+    "expected_sources": ["data/engineering/code-review-guidelines.md"]
+  },
+  {
+    "id": 24,
+    "type": "stress_exact",
+    "question": "What does RCA mean at Nimbus?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Root cause analysis: the core section of a postmortem.",
+    "expected_sources": ["data/general/glossary.md"]
+  },
+  {
+    "id": 25,
+    "type": "stress_vague",
+    "question": "I am new and nervous about breaking production. What should I know?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Key safeguards: deploys go to a 5% canary for 15 minutes with automatic rollback on error-rate or latency regressions, and you manually promote to 100%; auth, billing and data-deletion changes need a feature flag and two review approvals; rollback needs no approval (re-run the pipeline on the previous tag, announce it in the incident channel); no deploys after 16:00 Friday or in freeze windows. Keep PRs under 400 lines; a reviewer responds within one working day. Never point local at the production database. Postmortems are blameless: the March outage was a deploy-process gap (no gradual rollout), not a review failure, and the July canary rollback shows the safeguards catching a bad deploy automatically.",
+    "expected_sources": ["data/engineering/deployment-process-v2.md", "data/engineering/code-review-guidelines.md"]
+  },
+  {
+    "id": 26,
+    "type": "stress_vague",
+    "question": "What is expected of me in terms of how I treat colleagues?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Treat colleagues, customers and candidates with respect; assume good intent; disagree in the open (shared channel or PR thread, not side DMs); commit once a decision is made; escalate to the decision owner if a disagreement doesn't resolve in two rounds. Not acceptable: harassment, sharing confidential data, misrepresenting your work or the company, retaliating against someone who raises a concern. Raise concerns with your manager, or People if your manager is involved.",
+    "expected_sources": ["data/general/code-of-conduct.md"]
+  },
+  {
+    "id": 27,
+    "type": "stress_dates",
+    "question": "What is the current remote work policy?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "hybrid-work-policy.md (effective 2026-08-15) is current and supersedes remote-work-policy.md (2026-02-01, archived). Nimbus Labs stays remote-first with no company-wide office days, but teams with 3+ people in the same metro area agree one weekly anchor day with their manager; fully distributed teams are unaffected. Working abroad: up to 30 days a year without approval, beyond that written People approval requested 3 weeks ahead. New joiners get a laptop and a one-time 400 USD home office stipend (claim within 90 days). Teams meet in person twice a year. Contractors are treated as exempt from anchor days for now.",
+    "expected_sources": ["data/general/hybrid-work-policy.md"]
+  },
+  {
+    "id": 28,
+    "type": "stress_duplicate",
+    "question": "What is the expense rule for team lunches?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "From general/faq.md: meals under 40 USD can be expensed without pre-approval; keep the receipt and submit within 30 days. Anything bigger, ask your manager informally first. Must not cite or quote finance/expense-policy.md.",
+    "expected_sources": ["data/general/faq.md"]
+  },
+  {
+    "id": 29,
+    "type": "stress_partial",
+    "question": "I want to run a paid campaign. What approval do I need and what is the budget cap?",
+    "email": "amaka@nimbuslabs.io",
+    "department": "growth",
+    "expected": "Approval (growth docs): write a brief and submit it in the Growth planning board. Campaigns under 5,000 USD are approved by the Growth lead; above that also need Finance approval. Because it's paid media, any single channel above 2,000 USD/month needs Finance approval before launch, even if the campaign total is under 5,000 USD. Every paid campaign needs a platform-level daily spend cap and a named kill-switch owner. Budget cap: no budget figure appears in the documents Amaka can access, so the answer should say it isn't available to her rather than inventing one.",
+    "expected_sources": ["data/growth/campaign-process.md", "data/growth/paid-media-policy.md"]
+  },
+  {
+    "id": 30,
+    "type": "stress_personal",
+    "question": "What equipment was issued to me?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "MacBook Pro 14 inch, asset tag NL-2291, issued 2026-06-15; external monitor, asset tag NL-2312, issued 2026-06-20. She also claimed the 400 USD home office stipend on 2026-07-02, paid in the July payroll.",
+    "expected_sources": ["data/personal/sarah@nimbuslabs.io/equipment-record.md"]
+  },
+
+  {
+    "id": 31,
+    "type": "unanswerable",
+    "question": "Is there a dress code for the office or customer meetings?",
+    "email": "sarah@nimbuslabs.io",
+    "department": "engineering",
+    "expected": "Says it could not find information about that. A dress code is not covered anywhere in the corpus.",
+    "expected_sources": []
+  },
+  {
+    "id": 32,
+    "type": "unanswerable",
+    "question": "Do we pay a bonus for referring someone who gets hired?",
+    "email": "tunde@nimbuslabs.io",
+    "department": "people",
+    "expected": "Says it could not find information about that. Employee referrals and referral bonuses are not covered anywhere in the corpus, including the people documents.",
+    "expected_sources": []
+  }
+]

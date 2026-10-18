@@ -105,7 +105,7 @@ replacement:
    `general/hybrid-work-policy.md` (2026-08-15, current) — adds
    mandatory anchor days for co-located teams.
 2. `engineering/deployment-process.md` (2026-04-10, archived) →
-   `engineering/deployment-process-v2.md` (2026-08-15, current) — adds
+   `engineering/deployment-process-v2.md` (2026-05-15, current) — adds
    canary rollouts and mandatory feature flags, written up as a direct
    action item of `engineering/incident-postmortem-2026-03-outage.md`.
 3. `people/performance-review-process.md` (2026-01-10, partially
