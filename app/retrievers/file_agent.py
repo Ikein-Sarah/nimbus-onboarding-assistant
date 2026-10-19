@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -21,8 +22,17 @@ to answer an employee's question.
 How to work:
 - Start with list_folder on "data" to see what you can reach.
 - Use grep to find which documents mention terms from the question.
+- grep only matches exact words. Documents often use different words from
+  the question, so if a search finds nothing, try synonyms and related
+  terms before giving up. For example, "wifi" might appear as "network",
+  "boss" as "manager", and "login" as "access". Also try single words
+  instead of phrases, and other spellings, for example "color" and "colour".
+- If searching still finds nothing, browse the folder that fits the topic
+  (finance topics in data/finance, people topics in data/people, and so on)
+  and read files whose names look relevant.
 - Use read_file to open the documents that look relevant.
-- Stop as soon as you have found the documents that contain the answer.
+- Before you finish, open every document you are going to name with read_file.
+  A grep match alone is not enough.
 
 Some folders and files will refuse you. That is normal: it means this
 employee is not permitted to see them. Do not try to work around a refusal,
@@ -103,7 +113,7 @@ def run_tool(name, arguments, email, department):
 def retrieve_with_stats(question, email, department):
     conversation = [{"role": "user", "content": question}]
     opened = []
-    stats = {"tool_calls": 0, "steps": 0, "refused": 0}
+    stats = {"tool_calls": 0, "steps": 0, "refused": 0, "bad_calls": 0}
 
     for _ in range(MAX_STEPS):
         response = client.responses.create(
@@ -122,12 +132,18 @@ def retrieve_with_stats(question, email, department):
 
         for call in calls:
             stats["tool_calls"] += 1
-            arguments = json.loads(call.arguments)
-            result = run_tool(call.name, arguments, email, department)
+            try:
+                arguments = json.loads(call.arguments)
+                result = run_tool(call.name, arguments, email, department)
+            except (json.JSONDecodeError, KeyError) as error:
+                stats["bad_calls"] += 1
+                arguments = {}
+                result = f"Tool call failed: {error}. Check the arguments and try again."
 
+            failed = result.startswith("Tool call failed")
             if result.startswith(REFUSALS):
                 stats["refused"] += 1
-            elif call.name == "read_file" and arguments["path"] not in opened:
+            elif call.name == "read_file" and not failed and arguments["path"] not in opened:
                 opened.append(arguments["path"])
 
             conversation.append({
@@ -135,6 +151,14 @@ def retrieve_with_stats(question, email, department):
                 "call_id": call.call_id,
                 "output": result,
             })
+
+    # The agent sometimes names a file it only saw in grep results. Open those
+    # through fs.read_file so the same permission check applies.
+    for path in re.findall(r"data/[\w./@-]+\.md", response.output_text):
+        if path not in opened:
+            result = fs.read_file(path, email, department)
+            if not result.startswith(REFUSALS):
+                opened.append(path)
 
     chunks = []
     for path in opened:

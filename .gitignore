@@ -2,3 +2,6 @@
 __pycache__/
 .env
 .claude/settings.local.json
+CONTEXT_FOR_CHATGPT.md
+.DS_Store
+.DS_Store
