@@ -5,3 +5,7 @@ __pycache__/
 CONTEXT_FOR_CHATGPT.md
 .DS_Store
 .DS_Store
+
+# Design references, kept local
+nimbus-design-final.html
+nimbus-chat-open-dark.png

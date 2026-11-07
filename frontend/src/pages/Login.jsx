@@ -27,8 +27,8 @@ export default function Login({ onLogin }) {
       <div className="brand">
         <div className="logo"><i />Nimbus</div>
         <div>
-          <h1>Everything you need for your first 90 days.</h1>
-          <p>Your goals, your onboarding steps, and answers about how things work here, all in one place.</p>
+          <h1>Everything you need at Nimbus, in one place.</h1>
+          <p>Ask how things work here, track your goals and feedback, and get help settling in if you're new.</p>
         </div>
         <small>Nimbus Labs</small>
       </div>
