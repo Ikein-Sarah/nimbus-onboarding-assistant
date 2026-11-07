@@ -2,7 +2,7 @@
 title: Offer Letter - Priya Raman
 department: growth
 owner: priya@nimbuslabs.io
-effective: 2022-11-14
+effective: 2026-09-30
 summary: Personal employment and compensation record.
 ---
 
@@ -11,7 +11,7 @@ summary: Personal employment and compensation record.
 Employee: Priya Raman
 Role: Head of Growth, level G3
 Department: Growth
-Start date: 2022-11-14
+Start date: 2026-10-14
 Manager: (CEO, not in demo roster)
 
 ## Compensation

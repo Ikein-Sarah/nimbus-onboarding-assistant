@@ -10,8 +10,9 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, ConfigDict, Field
 
+from app import progress
 from app.answer import answer
-from app.retrievers import file_agent, vector
+from app.summary import weekly_summary
 from app.users import check_password, get_user, hash_password
 
 load_dotenv()
@@ -31,9 +32,6 @@ app = FastAPI(title="Nimbus onboarding assistant")
 bearer = HTTPBearer(auto_error=False)
 
 
-RETRIEVERS = {"vector": vector.retrieve, "file_agent": file_agent.retrieve}
-
-
 class LoginRequest(BaseModel):
     email: str
     password: str
@@ -45,7 +43,12 @@ class AskRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     question: str = Field(min_length=1, max_length=1000)
-    route: Literal["vector", "file_agent"] = "vector"
+
+
+class GoalStatusRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    status: Literal[progress.GOAL_STATUSES]
 
 
 def public(user):
@@ -124,11 +127,75 @@ def demo_users():
 @app.post("/ask")
 def ask(body: AskRequest, user=Depends(current_user)):
     start = time.perf_counter()
-    result = answer(body.question.strip(), user["email"], user["department"],
-                    retriever=RETRIEVERS[body.route])
+    # Always the hybrid retriever (dense + keyword search, fused).
+    result = answer(body.question.strip(), user["email"], user["department"])
     return {
         "answer": result["answer"],
         "sources": result["sources"],
-        "route": body.route,
         "seconds": round(time.perf_counter() - start, 2),
     }
+
+
+def not_found():
+    # Same answer for "doesn't exist" and "belongs to someone else", so ids
+    # can't be probed to learn about other users' items.
+    return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+
+
+@app.get("/dashboard")
+def dashboard(user=Depends(current_user)):
+    email = user["email"]
+    today = datetime.now().date()
+    start_date = user["start_date"] or today
+    days = (today - start_date).days
+
+    with psycopg.connect(DATABASE_URL) as conn:
+        goals = progress.get_goals(conn, email)
+        checklist = progress.get_checklist(conn, email)
+        feedback = progress.get_feedback(conn, email)
+        manager = get_user(conn, user["manager_email"]) if user["manager_email"] else None
+        summary = weekly_summary(conn, email, goals, checklist, start_date)
+
+    phase = progress.current_phase(days)
+    phase_goals = [g for g in goals if g["phase"] == phase]
+
+    return {
+        "profile": {
+            **public(user),
+            "manager": {"email": manager["email"], "name": manager["name"]} if manager else None,
+            "start_date": start_date,
+            "days_at_nimbus": days,
+        },
+        "stats": {
+            "days_at_nimbus": days,
+            "current_phase": phase,
+            "goals_done": sum(g["status"] == "done" for g in phase_goals),
+            "goals_total": len(phase_goals),
+            "checklist_done": sum(c["done"] for c in checklist),
+            "checklist_total": len(checklist),
+            "new_feedback": sum(f["is_new"] for f in feedback),
+        },
+        "goals": goals,
+        "checklist": checklist,
+        "feedback": feedback,
+        "up_next": progress.up_next(goals, checklist),
+        "summary": summary,
+    }
+
+
+@app.post("/checklist/{item_id}/toggle")
+def toggle_checklist(item_id: int, user=Depends(current_user)):
+    with psycopg.connect(DATABASE_URL) as conn:
+        item = progress.toggle_checklist_item(conn, user["email"], item_id)
+    if item is None:
+        raise not_found()
+    return item
+
+
+@app.post("/goals/{goal_id}/status")
+def set_goal_status(goal_id: int, body: GoalStatusRequest, user=Depends(current_user)):
+    with psycopg.connect(DATABASE_URL) as conn:
+        goal = progress.set_goal_status(conn, user["email"], goal_id, body.status)
+    if goal is None:
+        raise not_found()
+    return goal

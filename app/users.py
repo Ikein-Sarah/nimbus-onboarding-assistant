@@ -24,14 +24,18 @@ def check_password(password, password_hash):
         return False
 
 
+USER_FIELDS = ("email", "name", "department", "title", "start_date", "manager_email",
+               "password_hash")
+
+
 def get_user(conn, email):
     row = conn.execute(
-        "SELECT email, name, department, title, password_hash FROM users WHERE email = %s",
+        f"SELECT {', '.join(USER_FIELDS)} FROM users WHERE email = %s",
         (email,),
     ).fetchone()
     if row is None:
         return None
-    return dict(zip(("email", "name", "department", "title", "password_hash"), row))
+    return dict(zip(USER_FIELDS, row))
 
 
 def create_table(conn):
@@ -44,6 +48,9 @@ def create_table(conn):
             password_hash  TEXT NOT NULL
         )
     """)
+    # Added after the table first shipped, so older databases get them too.
+    conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS start_date DATE")
+    conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS manager_email TEXT")
     conn.commit()
 
 
@@ -54,17 +61,23 @@ def seed(conn, password):
         # The seed file calls the department "role".
         conn.execute(
             """
-            INSERT INTO users (email, name, department, title, password_hash)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO users (email, name, department, title, start_date, password_hash)
+            VALUES (%s, %s, %s, %s, %s, %s)
             ON CONFLICT (email) DO UPDATE SET
                 name = EXCLUDED.name,
                 department = EXCLUDED.department,
                 title = EXCLUDED.title,
+                start_date = EXCLUDED.start_date,
                 password_hash = EXCLUDED.password_hash
             """,
             (user["email"], user["name"], user["role"], user["title"],
-             hash_password(password)),
+             user["start_date"], hash_password(password)),
         )
+
+    # Managers are set in a second pass, once every user row exists.
+    for user in users:
+        conn.execute("UPDATE users SET manager_email = %s WHERE email = %s",
+                     (user["manager_email"], user["email"]))
 
     conn.commit()
     return len(users)

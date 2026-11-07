@@ -271,7 +271,7 @@
     "question": "What equipment was issued to me?",
     "email": "sarah@nimbuslabs.io",
     "department": "engineering",
-    "expected": "MacBook Pro 14 inch, asset tag NL-2291, issued 2026-06-15; external monitor, asset tag NL-2312, issued 2026-06-20. She also claimed the 400 USD home office stipend on 2026-07-02, paid in the July payroll.",
+    "expected": "MacBook Pro 14 inch, asset tag NL-2291, issued 2026-10-26; external monitor, asset tag NL-2312, issued 2026-10-28. She also claimed the 400 USD home office stipend on 2026-11-03, to be paid in the November payroll.",
     "expected_sources": ["data/personal/sarah@nimbuslabs.io/equipment-record.md"]
   },
 

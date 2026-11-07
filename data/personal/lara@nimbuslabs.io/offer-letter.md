@@ -2,7 +2,7 @@
 title: Offer Letter - Lara Mensah
 department: finance
 owner: lara@nimbuslabs.io
-effective: 2026-02-02
+effective: 2026-10-06
 summary: Personal employment and compensation record.
 ---
 
@@ -11,7 +11,7 @@ summary: Personal employment and compensation record.
 Employee: Lara Mensah
 Role: Finance Analyst, level F2
 Department: Finance
-Start date: 2026-02-16
+Start date: 2026-10-20
 Manager: Henrik Larsen
 
 ## Compensation

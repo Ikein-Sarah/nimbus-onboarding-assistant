@@ -2,7 +2,7 @@
 title: Equipment Record - Tunde Bello
 department: people
 owner: tunde@nimbuslabs.io
-effective: 2023-08-07
+effective: 2026-10-24
 summary: Personal equipment and stipend record.
 ---
 
@@ -12,15 +12,13 @@ Employee: Tunde Bello
 
 ## Issued
 
-MacBook Air 13 inch, asset tag NL-1180, issued 2023-08-07.
+MacBook Air 13 inch, asset tag NL-1180, issued 2026-10-24.
 
 ## Stipend
 
-Home office stipend of 400 USD claimed on 2023-09-30 and paid in the
-October 2023 payroll run — slightly outside the 90-day window described
-in `general/hybrid-work-policy.md`; approved as an exception by Finance
-at the time since the policy's exact wording was still being finalized
-that quarter.
+Home office stipend not yet claimed. New joiners can claim the one-time
+400 USD stipend within 90 days of their start date, per
+`general/hybrid-work-policy.md`.
 
 ## Return
 

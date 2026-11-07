@@ -61,6 +61,16 @@ def build_context(chunks):
     return "\n\n".join(parts)
 
 
+def cited_sources(text, chunks):
+    """The retrieved files the answer actually cites.
+
+    The prompt asks for full paths like (data/general/leave-policy.md), but
+    the model sometimes writes just the file name, so either counts.
+    """
+    paths = {c["path"] for c in chunks}
+    return sorted(p for p in paths if p in text or p.rsplit("/", 1)[-1] in text)
+
+
 def answer(question, email, department, retriever=vector.retrieve):
     chunks = retriever(question, email, department)
     context = build_context(chunks)
@@ -78,7 +88,7 @@ def answer(question, email, department, retriever=vector.retrieve):
 
     return {
         "answer": text,
-        "sources": [] if refused else sorted({c["path"] for c in chunks}),
+        "sources": [] if refused else cited_sources(text, chunks),
     }
 
 
