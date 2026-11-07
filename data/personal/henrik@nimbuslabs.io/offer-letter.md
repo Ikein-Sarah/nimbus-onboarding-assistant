@@ -2,7 +2,7 @@
 title: Offer Letter - Henrik Larsen
 department: finance
 owner: henrik@nimbuslabs.io
-effective: 2022-04-18
+effective: 2026-10-02
 summary: Personal employment and compensation record.
 ---
 
@@ -11,7 +11,7 @@ summary: Personal employment and compensation record.
 Employee: Henrik Larsen
 Role: Finance Lead, level F3
 Department: Finance
-Start date: 2022-04-18
+Start date: 2026-10-16
 Manager: (CEO, not in demo roster)
 
 ## Compensation

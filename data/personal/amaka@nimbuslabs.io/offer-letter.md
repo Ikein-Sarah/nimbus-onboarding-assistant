@@ -2,7 +2,7 @@
 title: Offer Letter - Amaka Eze
 department: growth
 owner: amaka@nimbuslabs.io
-effective: 2026-04-01
+effective: 2026-10-07
 summary: Personal employment and compensation record.
 ---
 
@@ -11,7 +11,7 @@ summary: Personal employment and compensation record.
 Employee: Amaka Eze
 Role: Growth Manager, level G2
 Department: Growth
-Start date: 2026-04-15
+Start date: 2026-10-21
 Manager: Priya Raman
 
 ## Compensation

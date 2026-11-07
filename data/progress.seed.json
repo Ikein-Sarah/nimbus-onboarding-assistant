@@ -1,0 +1,410 @@
+{
+  "_note": "Sample onboarding progress. Goals and checklist come from the user's department; per-user entries say how far along they are. due_in_days and days_ago are relative to the day you seed, so the demo always looks current.",
+  "departments": {
+    "engineering": {
+      "goals": [
+        {
+          "phase": 30,
+          "title": "Set up laptop and dev environment",
+          "due_in_days": -10
+        },
+        {
+          "phase": 30,
+          "title": "Ship a first small fix",
+          "due_in_days": -4
+        },
+        {
+          "phase": 30,
+          "title": "Shadow one on-call shift",
+          "due_in_days": 6
+        },
+        {
+          "phase": 30,
+          "title": "Read the deployment process",
+          "due_in_days": 10
+        },
+        {
+          "phase": 60,
+          "title": "Own a small feature end to end",
+          "due_in_days": 35
+        },
+        {
+          "phase": 60,
+          "title": "Join the on-call rotation",
+          "due_in_days": 45
+        },
+        {
+          "phase": 90,
+          "title": "Lead a code review",
+          "due_in_days": 65
+        },
+        {
+          "phase": 90,
+          "title": "Present a demo to the team",
+          "due_in_days": 75
+        }
+      ],
+      "checklist": [
+        {
+          "title": "Sign your offer letter"
+        },
+        {
+          "title": "Collect your laptop"
+        },
+        {
+          "title": "Get GitHub access"
+        },
+        {
+          "title": "Set up two-factor login"
+        },
+        {
+          "title": "Join the team channels"
+        },
+        {
+          "title": "Meet your onboarding buddy",
+          "due_in_days": 3
+        },
+        {
+          "title": "Complete security training",
+          "due_in_days": 8
+        },
+        {
+          "title": "Read the engineering handbook",
+          "due_in_days": 12
+        }
+      ]
+    },
+    "growth": {
+      "goals": [
+        {
+          "phase": 30,
+          "title": "Get CRM and Figma access",
+          "due_in_days": -12
+        },
+        {
+          "phase": 30,
+          "title": "Read the brand guidelines",
+          "due_in_days": -5
+        },
+        {
+          "phase": 30,
+          "title": "Shadow a campaign brief",
+          "due_in_days": 5
+        },
+        {
+          "phase": 30,
+          "title": "Read the CRM rules",
+          "due_in_days": 9
+        },
+        {
+          "phase": 60,
+          "title": "Write your first campaign brief",
+          "due_in_days": 32
+        },
+        {
+          "phase": 60,
+          "title": "Run a small paid test with Finance sign-off",
+          "due_in_days": 48
+        },
+        {
+          "phase": 90,
+          "title": "Own a campaign from brief to report",
+          "due_in_days": 70
+        },
+        {
+          "phase": 90,
+          "title": "Share campaign results with the team",
+          "due_in_days": 80
+        }
+      ],
+      "checklist": [
+        {
+          "title": "Sign your offer letter"
+        },
+        {
+          "title": "Collect your laptop"
+        },
+        {
+          "title": "Get HubSpot access"
+        },
+        {
+          "title": "Set up two-factor login"
+        },
+        {
+          "title": "Join the growth channels"
+        },
+        {
+          "title": "Meet your onboarding buddy",
+          "due_in_days": 2
+        },
+        {
+          "title": "Get added to the ad platform seats",
+          "due_in_days": 7
+        },
+        {
+          "title": "Meet Finance about paid spend",
+          "due_in_days": 11
+        }
+      ]
+    },
+    "people": {
+      "goals": [
+        {
+          "phase": 30,
+          "title": "Get Workday and ATS access",
+          "due_in_days": -11
+        },
+        {
+          "phase": 30,
+          "title": "Walk through the salary bands",
+          "due_in_days": -3
+        },
+        {
+          "phase": 30,
+          "title": "Shadow an offer approval end to end",
+          "due_in_days": 6
+        },
+        {
+          "phase": 30,
+          "title": "Read the hiring process",
+          "due_in_days": 9
+        },
+        {
+          "phase": 60,
+          "title": "Run a new joiner's first week",
+          "due_in_days": 38
+        },
+        {
+          "phase": 60,
+          "title": "Shadow a review calibration session",
+          "due_in_days": 50
+        },
+        {
+          "phase": 90,
+          "title": "Own an offer from approval to signature",
+          "due_in_days": 68
+        },
+        {
+          "phase": 90,
+          "title": "Suggest one onboarding improvement",
+          "due_in_days": 82
+        }
+      ],
+      "checklist": [
+        {
+          "title": "Sign your offer letter"
+        },
+        {
+          "title": "Collect your laptop"
+        },
+        {
+          "title": "Get Workday access"
+        },
+        {
+          "title": "Set up two-factor login"
+        },
+        {
+          "title": "Join the people team channels"
+        },
+        {
+          "title": "Meet your onboarding buddy",
+          "due_in_days": 3
+        },
+        {
+          "title": "Complete data privacy training",
+          "due_in_days": 6
+        },
+        {
+          "title": "Read the employee handbook",
+          "due_in_days": 12
+        }
+      ]
+    },
+    "finance": {
+      "goals": [
+        {
+          "phase": 30,
+          "title": "Get accounting and expense tool access",
+          "due_in_days": -9
+        },
+        {
+          "phase": 30,
+          "title": "Read the expense and procurement policies",
+          "due_in_days": -2
+        },
+        {
+          "phase": 30,
+          "title": "Shadow a reimbursement run",
+          "due_in_days": 5
+        },
+        {
+          "phase": 30,
+          "title": "Shadow a vendor onboarding",
+          "due_in_days": 10
+        },
+        {
+          "phase": 60,
+          "title": "Run a reimbursement batch yourself",
+          "due_in_days": 36
+        },
+        {
+          "phase": 60,
+          "title": "Sit in on a budget variance review",
+          "due_in_days": 47
+        },
+        {
+          "phase": 90,
+          "title": "Own the monthly vendor payment run",
+          "due_in_days": 66
+        },
+        {
+          "phase": 90,
+          "title": "Present a department budget summary",
+          "due_in_days": 78
+        }
+      ],
+      "checklist": [
+        {
+          "title": "Sign your offer letter"
+        },
+        {
+          "title": "Collect your laptop"
+        },
+        {
+          "title": "Get banking portal view access"
+        },
+        {
+          "title": "Set up two-factor login"
+        },
+        {
+          "title": "Join the finance channels"
+        },
+        {
+          "title": "Meet your onboarding buddy",
+          "due_in_days": 2
+        },
+        {
+          "title": "Complete security training",
+          "due_in_days": 7
+        },
+        {
+          "title": "Learn the department envelope structure",
+          "due_in_days": 13
+        }
+      ]
+    }
+  },
+  "users": {
+    "sarah@nimbuslabs.io": {
+      "goals_done": 2,
+      "goals_in_progress": 1,
+      "checklist_done": 5,
+      "feedback": [
+        {
+          "from": "daniel@nimbuslabs.io",
+          "days_ago": 10,
+          "text": "Welcome to the team! Your laptop setup went smoothly. Let's meet on Friday to agree your 30-60-90 goals."
+        },
+        {
+          "from": "daniel@nimbuslabs.io",
+          "days_ago": 2,
+          "text": "Great first fix, clean PR and a clear description. Next, focus on the deploy doc before your on-call shadow."
+        }
+      ]
+    },
+    "john@nimbuslabs.io": {
+      "goals_done": 2,
+      "goals_in_progress": 1,
+      "checklist_done": 6,
+      "feedback": [
+        {
+          "from": "daniel@nimbuslabs.io",
+          "days_ago": 4,
+          "text": "Strong first week. Your review comments on the starter PRs were clear and kind. Next, shadow an on-call shift before you take one yourself."
+        }
+      ]
+    },
+    "daniel@nimbuslabs.io": {
+      "goals_done": 3,
+      "goals_in_progress": 1,
+      "checklist_done": 7,
+      "feedback": [
+        {
+          "from": "tunde@nimbuslabs.io",
+          "days_ago": 6,
+          "text": "Great to have you on board. Your 30-60-90 plans for Sarah and John are clear and realistic. Let's book your own 30-day check-in."
+        }
+      ]
+    },
+    "amaka@nimbuslabs.io": {
+      "goals_done": 2,
+      "goals_in_progress": 1,
+      "checklist_done": 6,
+      "feedback": [
+        {
+          "from": "priya@nimbuslabs.io",
+          "days_ago": 12,
+          "text": "Good start on the brand guidelines. Bring any questions on tone of voice to our next 1:1."
+        },
+        {
+          "from": "priya@nimbuslabs.io",
+          "days_ago": 3,
+          "text": "Your campaign brief draft was strong. Tighten the success metrics and check the budget approval steps before you send it."
+        }
+      ]
+    },
+    "priya@nimbuslabs.io": {
+      "goals_done": 3,
+      "goals_in_progress": 1,
+      "checklist_done": 7,
+      "feedback": [
+        {
+          "from": "henrik@nimbuslabs.io",
+          "days_ago": 5,
+          "text": "Thanks for sharing the paid media forecast early. It lined up well with Finance's numbers for your first quarter."
+        }
+      ]
+    },
+    "tunde@nimbuslabs.io": {
+      "goals_done": 2,
+      "goals_in_progress": 1,
+      "checklist_done": 4,
+      "feedback": [
+        {
+          "from": "henrik@nimbuslabs.io",
+          "days_ago": 3,
+          "text": "Good start. Your notes from shadowing the offer approval were really clear. Next, get walked through the salary bands."
+        }
+      ]
+    },
+    "lara@nimbuslabs.io": {
+      "goals_done": 2,
+      "goals_in_progress": 1,
+      "checklist_done": 6,
+      "feedback": [
+        {
+          "from": "henrik@nimbuslabs.io",
+          "days_ago": 15,
+          "text": "You picked up the expense policy quickly. Next, shadow a vendor onboarding with me."
+        },
+        {
+          "from": "henrik@nimbuslabs.io",
+          "days_ago": 1,
+          "text": "The reimbursement batch was accurate and on time. You're ready to run the next one on your own."
+        }
+      ]
+    },
+    "henrik@nimbuslabs.io": {
+      "goals_done": 3,
+      "goals_in_progress": 1,
+      "checklist_done": 7,
+      "feedback": [
+        {
+          "from": "priya@nimbuslabs.io",
+          "days_ago": 7,
+          "text": "Thanks for walking Amaka through the paid spend approvals in your first weeks. It made her first campaign brief much easier."
+        }
+      ]
+    }
+  }
+}

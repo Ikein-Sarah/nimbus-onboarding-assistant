@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getToken, request, setToken } from './api'
-import Chat from './Chat'
-import Login from './Login'
+import Login from './pages/Login'
+import Shell from './Shell'
 
 export default function App() {
   const [user, setUser] = useState(null)
@@ -23,5 +23,5 @@ export default function App() {
 
   if (checking) return null
   if (!user) return <Login onLogin={setUser} />
-  return <Chat user={user} onLogout={logout} />
+  return <Shell user={user} onLogout={logout} />
 }
