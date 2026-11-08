@@ -2,6 +2,18 @@
 
 Nimbus is an AI workplace assistant for employees. It answers questions using only the company documents each person is allowed to see, tracks goals and manager feedback, and guides new hires through onboarding.
 
+**Live demo:** https://nimbus-web-usyl.onrender.com
+
+**Demo login:** `sarah@nimbuslabs.io` / `012345678`
+
+First load may take a minute while the free server wakes up.
+
+**Demo video:** coming soon
+
+<!-- To add the video, replace VIDEO_ID (the part after watch?v= in the YouTube link) and uncomment:
+[![Nimbus demo video](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
+-->
+
 ![Home in dark mode](docs/screenshots/home-dark.jpg)
 
 | Ask Nimbus chat | My goals | Sign in |
@@ -10,79 +22,82 @@ Nimbus is an AI workplace assistant for employees. It answers questions using on
 
 ## Features
 
-- **Ask Nimbus side chat.** Ask how things work at the company. Answers come only from documents you can see and name the files they used. If the answer isn't there, it says so.
-- **AI weekly summary.** A short summary of your week, written to you, with what's done, what's due soon and what to do next.
-- **Goals with manager feedback.** Your 30, 60 and 90 day goals, and notes from your manager.
-- **Onboarding checklist and days at Nimbus** for new hires.
-- **Light and dark mode**, remembered in your browser.
+- **Ask Nimbus chat.** Answers come only from documents you can see, and name the files they used. If the answer isn't there, it says so.
+- **AI weekly summary.** What's done, what's due soon and what to do next.
+- **Goals and manager feedback.** Your 30, 60 and 90 day goals, and notes from your manager.
+- **Onboarding checklist** for new hires.
+- **Light and dark mode.**
 
-## How it works
+## Side experiment
 
-1. You sign in. The server gives you a token that says who you are.
-2. You ask a question. The server reads your identity and department from the token.
-3. Hybrid search looks through the documents you are allowed to see, by meaning (pgvector) and by exact words (Postgres full-text search), and merges the two result lists.
-4. GPT-4o answers from those documents only, and the chat shows the source files the answer cites.
+While building Nimbus I also ran a side experiment comparing two ways of finding answers in company documents: hybrid search (vector + keyword search) and agentic file search (an AI agent that lists folders, searches and reads files). The live app uses hybrid search. The comparison is in the [Evaluation](#evaluation) section.
 
-Each document has a header saying which department and which person can see it:
+## Architecture
 
-| Folder | Who can see it |
-|---|---|
-| `data/general/` | Everyone |
-| `data/engineering/`, `growth/`, `people/`, `finance/` | Only that department |
-| `data/personal/<email>/` | Only that one person |
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"fontSize": "16px", "lineColor": "#D29A63"}}}%%
+flowchart LR
+    A["Browser<br/>React app on Render"] --> B["FastAPI backend<br/>on Render"]
+    B --> C[("Postgres + pgvector<br/>on Neon")]
+    B --> D["OpenAI<br/>embeddings, answers,<br/>weekly summary"]
+    classDef app fill:#3B2216,stroke:#3B2216,color:#F6F0E9
+    classDef ext fill:#F6F0E9,stroke:#D29A63,stroke-width:2px,color:#3B2216
+    class A,B app
+    class C,D ext
+```
+
+How a question is answered:
+
+1. You sign in and get a token that says who you are.
+2. Your question goes to the backend with that token.
+3. Hybrid search (vector + keyword, merged with Reciprocal Rank Fusion) looks only through documents you are allowed to see.
+4. GPT-4o answers from those documents and lists its sources.
+
+Each document says who can see it: everyone (`data/general/`), one department (`data/engineering/`, `growth/`, `people/`, `finance/`), or one person (`data/personal/<email>/`).
 
 ## Security
 
-- Your identity comes from the login token, never from the request. The API rejects requests that try to send an email or department.
-- Access control happens in retrieval, not the prompt. Documents you can't see are filtered out in SQL, so the model never receives them.
-- You can only see and change your own goals and checklist items. Other people's items return 404, the same as items that don't exist.
+- Your identity comes from the login token, never from the request.
+- Access control happens in retrieval. Documents you can't see are filtered out in SQL, so the model never receives them.
+- You can only see and change your own goals and checklist. Other people's items return 404.
 - Passwords are hashed with bcrypt.
 - Tokens expire after 4 hours.
+- Rate limits protect the OpenAI budget (see Demo limits).
 
 ## Evaluation
 
-I compared two ways to find documents on the same 60 documents and 32 questions:
+**Goal.** Find out which approach answers more questions correctly, finds the right document more often, is faster, and never shows anyone a document they're not allowed to see.
 
-- **Hybrid search:** vector search plus keyword search, merged with Reciprocal Rank Fusion.
-- **Agentic file search:** a GPT-4o agent that browses folders with `list_folder`, `grep` and `read_file`, with the same permission check on every tool call.
+**How each approach works.**
 
-The questions cover simple lookups, multi-step questions, outdated policies, questions with no answer, and access traps (for example, an engineer asking for salary bands). A GPT-4o judge scores each answer out of 10, and 7 or more is a pass.
+- **Hybrid search:** documents are split into chunks and embedded into Postgres with pgvector. Each question runs a vector search and a Postgres full-text search, and the two lists are merged with Reciprocal Rank Fusion. The permission filter runs in the SQL query, before ranking.
+- **Agentic file search:** a gpt-4o agent with three tools, `list_folder`, `grep` and `read_file`, and up to 12 steps. The permission check runs inside every tool.
+- Both use the same answer step (gpt-4o) and the same permission rules.
 
-| | Hybrid v1 | Agent v1 | Hybrid v2 | Agent v2 |
-|---|---|---|---|---|
-| Passed | 26/32 | 23/32 | 25/32 | 25/32 |
-| Right document found | 22/23 | 18/23 | 22/23 | 22/23 |
-| Average time | 2.4s | 8.7s | 2.4s | 9.7s |
-| Leaks of restricted documents | 0 | 0 | 0 | 0 |
+![Hybrid search vs agentic file search](docs/search-comparison.svg)
 
-"Right document found" counts the 23 questions that have an expected source file. Results are in `eval/results-v1.json` and `eval/results-v2.json`.
+**How it was tested.** The same 60 documents and the same 32 questions, including 6 access traps (for example, an engineer asking for salary bands) and 3 questions with no answer in the documents. gpt-4o judged each answer.
 
-**The bug:** in v1 the agent found answers with `grep` but didn't open the files, so it answered from files it had never read. **The fix:** the agent now has to open every file it names, tries other words when a search finds nothing, and any file it names but didn't open is read through the same permission check. That brought it level with hybrid search on accuracy, but it is still about 4 times slower, so the app uses hybrid search.
+| | Hybrid search | Agentic file search |
+|---|---|---|
+| Questions passed | 25/32 | 25/32 |
+| Right document found | 22/23 | 22/23 |
+| Average time | 2.4s | 9.7s |
+| Restricted documents leaked | 0 | 0 |
 
-![Hybrid search vs agentic file search](docs/architecture.png)
+I wrote about the full comparison here: [Hybrid search vs agentic file search: which approach works better?](https://medium.com/@ikein_sarah/hybrid-search-vs-agentic-file-search-which-approach-works-better-82a64798b466)
 
 ## Tech stack
 
-- Python, FastAPI
-- Postgres + pgvector
-- OpenAI: `gpt-4o` and `text-embedding-3-small`
-- React + Vite
-- Docker
-
-## Try it online
-
-The demo runs on free hosting: the database on Neon, and the API and website on Render.
-
-First load may take a minute while the free server wakes up.
-
-To protect the OpenAI budget, each visitor can ask 10 questions an hour and 30 a day, and the whole app makes at most 200 OpenAI calls a day. The weekly summary is regenerated at most once an hour per user.
+Python, FastAPI, Postgres + pgvector, OpenAI (`gpt-4o`, `text-embedding-3-small`), React + Vite, Docker, Render, Neon
 
 ## Run it locally
 
 You need Docker, Python 3, Node 20.19 or newer, and an OpenAI API key.
 
+1. Get the code:
+
 ```bash
-# 1. Get the code
 git clone https://github.com/Ikein-Sarah/nimbus-onboarding-assistant.git
 cd nimbus-onboarding-assistant
 ```
@@ -96,47 +111,47 @@ JWT_SECRET=any-random-string-of-at-least-32-characters
 DEMO_PASSWORD=a-password-for-the-demo-users
 ```
 
-```bash
-# 3. Start the database
-docker compose up -d
+3. Start the database, set up the tables and data, and run the backend:
 
-# 4. Install Python packages
+```bash
+docker compose up -d
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-
-# 5. Create the tables, add the demo users, their goals and checklists, and embed the documents
 python -m scripts.setup_db
-
-# 6. Start the backend
 uvicorn app.api:app --reload --port 8001
 ```
 
+4. In a second terminal, run the frontend:
+
 ```bash
-# 7. In a second terminal, start the frontend
 cd frontend
 npm install
 npm run dev
 ```
 
-8. Open http://localhost:5173 and sign in as `sarah@nimbuslabs.io` with the `DEMO_PASSWORD` from your `.env`.
-
-Other demo users are in `data/users.seed.json`. Try asking about salary bands as Sarah (engineering) and then as `tunde@nimbuslabs.io` (people) to see access control in action.
+5. Open http://localhost:5173 and sign in as `sarah@nimbuslabs.io` with your `DEMO_PASSWORD`.
 
 ## Deploy it
 
 1. Create a free Neon project and copy its connection string.
-2. From your laptop, set up the hosted database once:
+2. Set up the database once from your laptop:
 
 ```bash
 DATABASE_URL='your-neon-connection-string' python -m scripts.setup_db
 ```
 
 3. On Render, create a Blueprint from this repo. `render.yaml` defines both services:
-   - `nimbus-api`, the FastAPI backend. Set `DATABASE_URL`, `OPENAI_API_KEY` and `FRONTEND_URL` (the website's address). `JWT_SECRET` is generated for you.
-   - `nimbus-web`, the static React site. Set `VITE_API_URL` to the API's address.
+   - `nimbus-api`: set `DATABASE_URL`, `OPENAI_API_KEY` and `FRONTEND_URL` (the website address).
+   - `nimbus-web`: set `VITE_API_URL` (the API address).
+
+## Demo limits
+
+- 10 questions per hour and 30 per day per visitor
+- 200 AI calls per day overall
+- The weekly summary is regenerated at most once an hour per user
 
 ## What's next
 
-- An HR invite flow for new employees
-- A report of questions the assistant couldn't answer
+- HR invite flow for new employees
+- Custom domain
