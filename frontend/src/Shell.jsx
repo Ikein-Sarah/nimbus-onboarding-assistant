@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { AuthError, request } from './api'
+import { AuthError, LimitError, request } from './api'
 import ChatButton from './components/ChatButton'
 import ChatPanel from './components/ChatPanel'
 import Sidebar from './components/Sidebar'
@@ -99,7 +99,8 @@ export default function Shell({ user, onLogout }) {
       setMessages((m) => [...m, { role: 'bot', text: result.answer, sources: result.sources }])
     } catch (err) {
       if (err instanceof AuthError) return onLogout()
-      setMessages((m) => [...m, { role: 'bot', text: `Sorry, something went wrong: ${err.message}` }])
+      const text = err instanceof LimitError ? err.message : `Sorry, something went wrong: ${err.message}`
+      setMessages((m) => [...m, { role: 'bot', text }])
     } finally {
       setBusy(false)
     }

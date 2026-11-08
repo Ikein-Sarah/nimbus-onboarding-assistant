@@ -1,14 +1,13 @@
-import os
 from dotenv import load_dotenv
 import psycopg
 from openai import OpenAI
 
 from app.documents import load_documents
 from app.chunking import chunk_documents
+from app.db import DATABASE_URL
 
 load_dotenv()
 
-DATABASE_URL = os.environ["DATABASE_URL"]
 MODEL = "text-embedding-3-small"
 DIMENSIONS = 1536
 BATCH_SIZE = 100
@@ -44,15 +43,15 @@ def store(conn, chunks):
         batch = chunks[start:start + BATCH_SIZE]
         vectors = embed_batch([c["text"] for c in batch])
 
-        for chunk, vector in zip(batch, vectors):
-            conn.execute(
-                """
-                INSERT INTO chunks (text, path, department, owner, embedding)
-                VALUES (%s, %s, %s, %s, %s)
-                """,
-                (chunk["text"], chunk["path"], chunk["department"],
-                 chunk["owner"], str(vector)),
-            )
+        # One batched insert, so a hosted database isn't a round trip per row.
+        conn.cursor().executemany(
+            """
+            INSERT INTO chunks (text, path, department, owner, embedding)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            [(chunk["text"], chunk["path"], chunk["department"], chunk["owner"], str(vector))
+             for chunk, vector in zip(batch, vectors)],
+        )
 
         conn.commit()
         print(f"stored {start + len(batch)} / {len(chunks)}")

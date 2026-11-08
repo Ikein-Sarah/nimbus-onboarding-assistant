@@ -1,0 +1,35 @@
+# Render Blueprint: the API as a web service and the React app as a static
+# site, both on the free plan. The database is on Neon, set up once with
+# scripts/setup_db.py. Values marked sync: false are secrets or addresses you
+# type into the Render dashboard; nothing secret is stored in this file.
+
+services:
+  - type: web
+    name: nimbus-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.14.4
+      - key: DATABASE_URL
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false
+
+  - type: web
+    name: nimbus-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: VITE_API_URL
+        sync: false

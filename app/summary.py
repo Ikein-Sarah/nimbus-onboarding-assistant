@@ -1,16 +1,19 @@
 import hashlib
 import json
 import logging
-from datetime import date
+from datetime import date, timedelta
 
 from dotenv import load_dotenv
 from openai import OpenAI
 from psycopg.types.json import Jsonb
 
+from app import limits
+
 load_dotenv()
 
 MODEL = "gpt-4o"
 TAGS = ("Done", "Soon", "Next")
+REGENERATE_AFTER = timedelta(hours=1)
 
 client = OpenAI()
 log = logging.getLogger(__name__)
@@ -86,9 +89,12 @@ def generate(goals, checklist, start_date, today):
 
 
 def weekly_summary(conn, email, goals, checklist, start_date):
-    """The user's summary, regenerated only when their progress or the date changes.
+    """The user's summary, regenerated when their progress or the date changes.
 
-    Returns None if the model call fails, so the dashboard still loads.
+    To save OpenAI credit it is regenerated at most once an hour per user, so
+    for up to an hour after a change the previous summary is shown. Returns
+    the previous summary (or None) if the daily cap is reached or the model
+    call fails, so the dashboard still loads.
     """
     today = date.today()
     fingerprint = hashlib.sha256(
@@ -96,17 +102,22 @@ def weekly_summary(conn, email, goals, checklist, start_date):
     ).hexdigest()
 
     row = conn.execute(
-        "SELECT summary FROM summaries WHERE user_email = %s AND fingerprint = %s",
-        (email, fingerprint),
+        "SELECT summary, fingerprint = %s, created_at > now() - %s"
+        " FROM summaries WHERE user_email = %s",
+        (fingerprint, REGENERATE_AFTER, email),
     ).fetchone()
-    if row:
-        return row[0]
+    cached = row[0] if row else None
+    if row and (row[1] or row[2]):
+        return cached
+
+    if not limits.allow_openai_call(conn):
+        return cached
 
     try:
         summary = generate(goals, checklist, start_date, today)
     except Exception:
         log.exception("weekly summary failed for %s", email)
-        return None
+        return cached
 
     conn.execute(
         """

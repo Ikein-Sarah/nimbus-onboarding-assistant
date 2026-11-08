@@ -1,3 +1,5 @@
+import hashlib
+import hmac
 import os
 import time
 from datetime import datetime, timedelta, timezone
@@ -6,18 +8,19 @@ from typing import Literal
 import jwt
 import psycopg
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, ConfigDict, Field
 
-from app import progress
+from app import limits, progress
 from app.answer import answer
+from app.db import DATABASE_URL
 from app.summary import weekly_summary
 from app.users import check_password, get_user, hash_password
 
 load_dotenv()
 
-DATABASE_URL = os.environ["DATABASE_URL"]
 JWT_SECRET = os.environ["JWT_SECRET"]
 if len(JWT_SECRET) < 32:
     raise RuntimeError("JWT_SECRET must be at least 32 characters")
@@ -30,6 +33,18 @@ DUMMY_HASH = hash_password("not-a-real-password")
 
 app = FastAPI(title="Nimbus onboarding assistant")
 bearer = HTTPBearer(auto_error=False)
+
+# When hosted, the frontend is on a different address, so the browser needs
+# CORS permission to call the API. Only that one address gets it. Locally the
+# Vite proxy keeps everything on one origin, so FRONTEND_URL is left unset.
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "").rstrip("/")
+if FRONTEND_URL:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[FRONTEND_URL],
+        allow_methods=["GET", "POST"],
+        allow_headers=["Authorization", "Content-Type"],
+    )
 
 
 class LoginRequest(BaseModel):
@@ -124,8 +139,25 @@ def demo_users():
     return [dict(zip(("email", "name", "department", "title"), row)) for row in rows]
 
 
+def client_key(request: Request):
+    """A stand-in for the visitor's IP address, for counting their questions.
+
+    Render's proxy puts the visitor's address first in X-Forwarded-For. The
+    address is hashed with the server secret so raw IPs are never stored.
+    """
+    forwarded = request.headers.get("x-forwarded-for", "")
+    ip = forwarded.split(",")[0].strip() or (request.client.host if request.client else "")
+    return hmac.new(JWT_SECRET.encode(), ip.encode(), hashlib.sha256).hexdigest()[:32]
+
+
 @app.post("/ask")
-def ask(body: AskRequest, user=Depends(current_user)):
+def ask(body: AskRequest, request: Request, user=Depends(current_user)):
+    with psycopg.connect(DATABASE_URL) as conn:
+        allowed = limits.allow_question(conn, client_key(request))
+    if not allowed:
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                            detail=limits.LIMIT_MESSAGE)
+
     start = time.perf_counter()
     # Always the hybrid retriever (dense + keyword search, fused).
     result = answer(body.question.strip(), user["email"], user["department"])

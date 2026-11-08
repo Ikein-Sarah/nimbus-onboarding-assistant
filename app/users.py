@@ -6,9 +6,10 @@ import bcrypt
 import psycopg
 from dotenv import load_dotenv
 
+from app.db import DATABASE_URL
+
 load_dotenv()
 
-DATABASE_URL = os.environ["DATABASE_URL"]
 SEED_FILE = Path("data/users.seed.json")
 
 

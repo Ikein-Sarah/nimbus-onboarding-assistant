@@ -1,8 +1,9 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// Requests to /api/... are forwarded to the FastAPI server, so the browser
-// only ever talks to one origin and the backend needs no CORS setup.
+// In local dev, requests to /api/... are forwarded to the FastAPI server, so
+// the browser only ever talks to one origin and the backend needs no CORS
+// setup. The hosted build calls VITE_API_URL directly instead.
 export default defineConfig({
   plugins: [react()],
   server: {

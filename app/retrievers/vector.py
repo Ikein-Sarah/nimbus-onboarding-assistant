@@ -1,11 +1,11 @@
-import os
 from dotenv import load_dotenv
 import psycopg
 from openai import OpenAI
 
+from app.db import DATABASE_URL
+
 load_dotenv()
 
-DATABASE_URL = os.environ["DATABASE_URL"]
 MODEL = "text-embedding-3-small"
 TOP_K = 5
 CANDIDATES = 20

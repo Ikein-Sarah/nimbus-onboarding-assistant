@@ -69,6 +69,14 @@ The questions cover simple lookups, multi-step questions, outdated policies, que
 - React + Vite
 - Docker
 
+## Try it online
+
+The demo runs on free hosting: the database on Neon, and the API and website on Render.
+
+First load may take a minute while the free server wakes up.
+
+To protect the OpenAI budget, each visitor can ask 10 questions an hour and 30 a day, and the whole app makes at most 200 OpenAI calls a day. The weekly summary is regenerated at most once an hour per user.
+
 ## Run it locally
 
 You need Docker, Python 3, Node 20.19 or newer, and an OpenAI API key.
@@ -97,10 +105,8 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# 5. Add the demo users, their goals and checklists, and embed the documents
-python -m app.users
-python -m app.progress
-python -m app.embed
+# 5. Create the tables, add the demo users, their goals and checklists, and embed the documents
+python -m scripts.setup_db
 
 # 6. Start the backend
 uvicorn app.api:app --reload --port 8001
@@ -117,8 +123,20 @@ npm run dev
 
 Other demo users are in `data/users.seed.json`. Try asking about salary bands as Sarah (engineering) and then as `tunde@nimbuslabs.io` (people) to see access control in action.
 
+## Deploy it
+
+1. Create a free Neon project and copy its connection string.
+2. From your laptop, set up the hosted database once:
+
+```bash
+DATABASE_URL='your-neon-connection-string' python -m scripts.setup_db
+```
+
+3. On Render, create a Blueprint from this repo. `render.yaml` defines both services:
+   - `nimbus-api`, the FastAPI backend. Set `DATABASE_URL`, `OPENAI_API_KEY` and `FRONTEND_URL` (the website's address). `JWT_SECRET` is generated for you.
+   - `nimbus-web`, the static React site. Set `VITE_API_URL` to the API's address.
+
 ## What's next
 
-- Deploy it online
 - An HR invite flow for new employees
 - A report of questions the assistant couldn't answer
